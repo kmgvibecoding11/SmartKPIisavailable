@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>КПД КМГ 2025–2027</title>
+<style>
+:root{
+  --bg:#f4f6f9;--surface:#fff;--surface2:#eef2f6;--text:#1b2430;--muted:#59667a;--border:#d9e0e8;
+  --accent:#0b6e99;--accent-bg:#e1f1f8;--on-accent:#fff;
+  --ok:#14703f;--ok-bg:#dff3e7;--risk:#7d5200;--risk-bg:#fcefcb;--lag:#a8231b;--lag-bg:#fbe2df;
+  --shadow:0 1px 2px rgba(20,30,45,.06),0 2px 8px rgba(20,30,45,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1419;--surface:#18212b;--surface2:#212c38;--text:#e7ecf1;--muted:#9fadbc;--border:#2d3947;
+    --accent:#5cc0ec;--accent-bg:#14303d;--on-accent:#06202c;
+    --ok:#62d796;--ok-bg:#12321f;--risk:#f2bd50;--risk-bg:#3a2e0e;--lag:#ff8f86;--lag-bg:#40171a;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1419;--surface:#18212b;--surface2:#212c38;--text:#e7ecf1;--muted:#9fadbc;--border:#2d3947;
+  --accent:#5cc0ec;--accent-bg:#14303d;--on-accent:#06202c;
+  --ok:#62d796;--ok-bg:#12321f;--risk:#f2bd50;--risk-bg:#3a2e0e;--lag:#ff8f86;--lag-bg:#40171a;
+  --shadow:none;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
+h1,h2,h3{line-height:1.25;margin:0 0 .5em}
+h1{font-size:1.35rem}h2{font-size:1.2rem}h3{font-size:1rem}
+p{margin:0 0 .75em}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.top{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5}
+.top .row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;padding:10px 0}
+.brand{display:flex;flex-direction:column}
+.brand small{color:var(--muted)}
+.ctrls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{padding:6px 12px;cursor:pointer;background:var(--surface);border-right:1px solid var(--border);font-size:.9rem}
+.seg label:last-of-type{border-right:0}
+.seg input:checked+label{background:var(--accent);color:var(--on-accent);font-weight:600}
+.seg input:focus-visible+label{outline:3px solid var(--accent);outline-offset:-3px}
+.btn{border:1px solid var(--border);background:var(--surface);padding:6px 12px;border-radius:8px;cursor:pointer}
+.btn:hover{background:var(--surface2)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:600}
+.btn.small{padding:3px 9px;font-size:.85rem}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:0;scrollbar-width:thin}
+nav.tabs button{border:0;background:none;padding:10px 14px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;color:var(--muted);font-weight:500}
+nav.tabs button[aria-current="page"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:700}
+.demo{background:var(--risk-bg);color:var(--risk);border-bottom:1px solid var(--border);font-size:.88rem}
+.demo .wrap{padding-top:6px;padding-bottom:6px}
+main{padding:20px 0 40px}
+.intro{background:var(--accent-bg);border-radius:10px;padding:12px 16px;margin-bottom:18px}
+.intro b{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;box-shadow:var(--shadow);margin-bottom:18px;min-width:0}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-bottom:18px}
+.grid>.card{margin:0}
+.tile .big{font-size:2rem;font-weight:700;line-height:1.1}
+.tile .lbl{color:var(--muted);font-size:.85rem}
+.bar{height:8px;background:var(--surface2);border-radius:5px;overflow:hidden;margin:8px 0}
+.bar>i{display:block;height:100%;background:var(--accent)}
+.bar.ok>i{background:var(--ok)}.bar.risk>i{background:var(--risk)}.bar.lag>i{background:var(--lag)}
+.tw{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}
+th{background:var(--surface2);font-weight:600;white-space:nowrap}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--surface2)}
+tfoot td{font-weight:700;background:var(--surface2)}
+.chip{display:inline-flex;gap:4px;align-items:center;padding:1px 8px;border-radius:99px;font-size:.8rem;font-weight:600;white-space:nowrap}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}.chip.risk{background:var(--risk-bg);color:var(--risk)}.chip.lag{background:var(--lag-bg);color:var(--lag)}
+.chip.neutral{background:var(--surface2);color:var(--muted)}
+.pm{font-variant-numeric:tabular-nums}
+.pm.up{color:var(--ok)}.pm.down{color:var(--lag)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.toolbar label{display:flex;gap:6px;align-items:center;color:var(--muted)}
+select,input[type=text],input[type=number]{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 8px;max-width:100%}
+input[type=number]{width:100px}
+.sortbtn{background:none;border:0;cursor:pointer;font-weight:600;padding:0}
+.steps{counter-reset:s;display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-bottom:18px}
+.step{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;position:relative}
+.step::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-weight:700;margin-bottom:6px}
+.step h3{margin-bottom:.25em}.step p{margin:0;color:var(--muted);font-size:.9rem}
+.msg{padding:8px 12px;border-radius:8px;margin:6px 0;font-size:.9rem}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}.msg.bad{background:var(--lag-bg);color:var(--lag)}.msg.warn{background:var(--risk-bg);color:var(--risk)}
+.methods{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.methods>div{border:1px solid var(--border);border-radius:10px;padding:12px;background:var(--surface2)}
+.methods h3{color:var(--accent)}
+.heat{border-collapse:separate;border-spacing:2px;font-size:.82rem}
+.heat th{background:none;padding:3px 4px;text-align:center}
+.heat td{text-align:center;padding:6px 4px;border:0;border-radius:4px;min-width:42px;font-weight:600;font-variant-numeric:tabular-nums}
+.heat td.rh{text-align:left;font-weight:500;background:none;white-space:nowrap}
+.heat td.ok{background:var(--ok-bg);color:var(--ok)}.heat td.risk{background:var(--risk-bg);color:var(--risk)}.heat td.lag{background:var(--lag-bg);color:var(--lag)}
+.heat td.fc{outline:1.5px dashed currentColor;outline-offset:-3px;font-style:italic}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:.85rem;color:var(--muted);margin-top:10px}
+svg text{fill:var(--muted);font-size:11px}
+.zones{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:18px}
+.zones .card{margin:0;text-align:center}
+.zones .big{font-size:2.2rem;font-weight:700}
+.ladder{display:grid;gap:8px}
+.ladder div{border-left:6px solid var(--border);padding:8px 12px;background:var(--surface2);border-radius:0 8px 8px 0}
+.ladder .l1{border-color:var(--ok)}.ladder .l2{border-color:var(--risk)}.ladder .l3{border-color:var(--lag)}
+input[type=range]{width:100%;min-width:130px;accent-color:var(--accent)}
+.formula{font-size:1.05rem;background:var(--surface2);border-radius:10px;padding:12px 16px;margin:10px 0}
+.crumbs{margin-bottom:12px}
+.muted{color:var(--muted)}
+.cols2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.cols2>.card{margin:0}
+footer{color:var(--muted);font-size:.82rem;padding:0 0 30px}
+@media (max-width:520px){.tile .big{font-size:1.7rem}th,td{padding:7px 8px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="row">
+      <div class="brand"><h1 style="margin:0">КПД КМГ 2025–2027</h1><small>Ключевые показатели деятельности АО НК «КазМунайГаз»</small></div>
+      <div class="ctrls">
+        <div class="seg" role="radiogroup" aria-label="Период">
+          <input type="radio" name="period" id="p-all" value="all" checked><label for="p-all">Все годы</label>
+          <input type="radio" name="period" id="p-2025" value="2025"><label for="p-2025">2025</label>
+          <input type="radio" name="period" id="p-2026" value="2026"><label for="p-2026">2026</label>
+          <input type="radio" name="period" id="p-2027" value="2027"><label for="p-2027">2027</label>
+        </div>
+        <button class="btn" id="theme" type="button" aria-label="Переключить тему">◐ Тема</button>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Разделы"></nav>
+  </div>
+</header>
+<div class="demo"><div class="wrap"><b>Демонстрационные данные.</b> Все цифры, пороги и правила иллюстративны и не пригодны для принятия решений. 2025 — факт, 2026 — ожидаемое по итогам года, 2027 — прогноз.</div></div>
+<main class="wrap" id="app"></main>
+<div class="wrap"><footer>Версия 1.0 · Правила расчёта: исполнение = факт / план (для «меньше — лучше» — план / факт), ограничение 120%, баллы = вес × исполнение. Пороги — допущения, подлежат уточнению по регламентам КМГ.</footer></div>
+
+<script>
+'use strict';
+/* ---------- данные ---------- */
+const YEARS=[2025,2026,2027];
+const YLAB={2025:'факт',2026:'ожидаемое',2027:'прогноз'};
+const TABS=[['overview','Обзор КПД КМГ'],['managers','Руководители'],['heat','Тепловая карта'],['form','Формирование КПД'],['monitor','Мониторинг'],['eval','Оценка']];
+
+// [название, ед., направление, вес, знаков, [[план,факт]×3]]
+const CORP=[
+ ['Добыча нефти и конденсата','млн т','up',12,1,[[23.5,23.8],[24.0,23.6],[24.5,24.9]]],
+ ['Переработка нефти','млн т','up',8,1,[[17.5,17.9],[18.0,17.4],[18.5,18.9]]],
+ ['EBITDA','млрд ₸','up',12,0,[[2800,2950],[3000,2850],[3200,3250]]],
+ ['Чистая прибыль','млрд ₸','up',10,0,[[900,870],[950,1000],[1000,960]]],
+ ['Операционные затраты на тонну','₸/т','down',8,0,[[14500,14900],[14800,14700],[15000,14600]]],
+ ['Свободный денежный поток','млрд ₸','up',10,0,[[300,340],[350,290],[400,410]]],
+ ['Инвестпроекты в срок','%','up',8,0,[[85,88],[88,84],[90,91]]],
+ ['Травматизм (LTIFR)','','down',10,2,[[.30,.27],[.28,.30],[.26,.25]]],
+ ['Интенсивность выбросов ПГ','т CO₂е/т','down',8,3,[[.150,.155],[.145,.147],[.140,.138]]],
+ ['Местное содержание','%','up',7,0,[[55,57],[57,54],[59,60]]],
+ ['Цифровая зрелость','балл','up',7,1,[[3.0,3.1],[3.3,3.2],[3.6,3.7]]]
+];
+// [название, ед., направление, база 2025, рост плана/год, знаков, вес]
+const DEPTS=[
+ {id:'prod',name:'Добыча',bias:1.02,k:[['Добыча нефти','млн т','up',23.5,1.02,1,35],['Операционные затраты на тонну','₸/т','down',14500,1.02,0,25],['Простои фонда скважин','%','down',4.5,.97,1,20],['Эффективность ГТМ','%','up',78,1.01,0,20]]},
+ {id:'ref',name:'Переработка и маркетинг',bias:.99,k:[['Объём переработки','млн т','up',17.5,1.03,1,30],['Выход светлых нефтепродуктов','%','up',62,1.005,1,25],['Энергоёмкость','индекс','down',100,.98,0,20],['Маржа переработки','$/барр','up',8.5,1.03,1,25]]},
+ {id:'fin',name:'Финансы',bias:1.04,k:[['EBITDA','млрд ₸','up',2800,1.07,0,30],['Чистый долг / EBITDA','x','down',1.8,.95,2,20],['Свободный денежный поток','млрд ₸','up',300,1.15,0,30],['Просроченная дебиторка','%','down',3.0,.95,1,20]]},
+ {id:'str',name:'Стратегия и инвестиции',bias:.97,k:[['Реализация стратегических инициатив','%','up',80,1.03,0,30],['Инвестпроекты в срок','%','up',85,1.03,0,30],['Целевая доходность IRR','%','up',14,1.02,1,20],['Качество бизнес-планов','балл','up',3.5,1.04,1,20]]},
+ {id:'hse',name:'ПБОТОС',bias:1.0,k:[['Травматизм (LTIFR)','','down',.30,.93,2,35],['Разливы нефти','ед.','down',12,.9,0,20],['Интенсивность выбросов ПГ','т CO₂е/т','down',.150,.96,3,25],['Выполнение мер ПБ','%','up',80,1.02,0,20]]},
+ {id:'dig',name:'Цифровизация и ИТ',bias:.94,k:[['Цифровая зрелость','балл','up',3.0,1.1,1,30],['Простой ИТ-систем','ч/мес','down',20,.9,0,25],['Проекты цифровизации в срок','%','up',80,1.04,0,25],['Кибер-инциденты','ед.','down',10,.9,0,20]]},
+ {id:'prc',name:'Закупки и местное содержание',bias:1.01,k:[['Местное содержание','%','up',55,1.04,0,30],['Экономия закупок','%','up',6,1.05,1,25],['Закупки в срок','%','up',80,1.02,0,25],['Доля конкурентных закупок','%','up',70,1.02,0,20]]},
+ {id:'hr',name:'Персонал',bias:.96,k:[['Текучесть кадров','%','down',7,.95,1,25],['Закрытие вакансий в срок','%','up',80,1.02,0,25],['Обучение руководителей','%','up',85,1.03,0,25],['Вовлечённость','балл','up',72,1.02,0,25]]},
+ {id:'leg',name:'Юридический',bias:1.03,k:[['Срок согласования договоров','дн.','down',5,.95,1,25],['Выигранные споры','%','up',75,1.02,0,30],['Претензионные риски','млн ₸','down',800,.92,0,25],['Соответствие требованиям','%','up',90,1.01,0,20]]},
+ {id:'geo',name:'Геология и разведка',bias:.93,k:[['Прирост запасов','млн т','up',30,1.03,1,30],['Успешность бурения','%','up',65,1.02,0,25],['Стоимость прироста запасов','$/т','down',1200,.98,0,25],['Сроки геологоразведки','%','up',85,1.03,0,20]]},
+ {id:'log',name:'Транспорт и логистика',bias:1.0,k:[['Затраты на транспортировку','₸/т','down',3200,.98,0,30],['Своевременность поставок','%','up',85,1.01,0,30],['Потери при транспортировке','%','down',.25,.96,2,20],['Загрузка мощностей','%','up',82,1.01,0,20]]},
+ {id:'aud',name:'Внутренний аудит',bias:.98,k:[['Выполнение плана аудитов','%','up',90,1.01,0,30],['Закрытие замечаний в срок','%','up',80,1.03,0,30],['Экономический эффект аудитов','млн ₸','up',500,1.08,0,20],['Повторные замечания','%','down',15,.93,0,20]]}
+];
+
+/* ---------- расчёт ---------- */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const calcPerf=(plan,fact,dir)=>Math.min(dir==='up'?fact/plan:plan/fact,1.2);
+const statusOf=p=>p>=1?'ok':p>=.9?'risk':'lag';
+const STL={ok:['✓','Выполнено'],risk:['!','Риск'],lag:['✕','Отставание']};
+const catOf=s=>s>=1.1?'Превосходит ожидания':s>=1?'Соответствует ожиданиям':s>=.9?'Частично соответствует':'Не соответствует';
+const fmt=(v,d=0)=>v.toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct=(p,d=1)=>fmt(p*100,d)+'%';
+const chip=s=>`<span class="chip ${s}"><span aria-hidden="true">${STL[s][0]}</span>${STL[s][1]}</span>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const unit=u=>u?' '+u:'';
+
+DEPTS.forEach((d,di)=>{
+  const r=rng(1000+di*77);
+  d.years={};d.q={};
+  YEARS.forEach((y,yi)=>{
+    const items=d.k.map(([name,u,dir,base,gr,dec,w])=>{
+      const plan=+(base*Math.pow(gr,yi)).toFixed(dec+(dec<3?0:0));
+      const ratio=d.bias+(yi===1?-.012:yi===2?.006:0)+(r()-.5)*.11;
+      const fact=+(dir==='up'?plan*ratio:plan/ratio).toFixed(dec);
+      return{name,unit:u,dir,w,dec,plan,fact,perf:calcPerf(plan,fact,dir)};
+    });
+    const score=items.reduce((s,i)=>s+i.w*i.perf,0)/100;
+    d.years[y]={items,score};
+    const raw=[0,1,2,3].map(()=>(r()-.5)*.07);const m=raw.reduce((a,b)=>a+b)/4;
+    d.q[y]=raw.map((v,qi)=>({v:score+v-m,fc:y===2027||(y===2026&&qi===3)}));
+  });
+});
+const corpYear=y=>{const yi=YEARS.indexOf(y);const items=CORP.map(([name,u,dir,w,dec,pf])=>{const[plan,fact]=pf[yi];return{name,unit:u,dir,w,dec,plan,fact,perf:calcPerf(plan,fact,dir)}});return{items,score:items.reduce((s,i)=>s+i.w*i.perf,0)/100}};
+const periodYears=()=>state.period==='all'?YEARS:[+state.period];
+const deptScore=(d,ys)=>ys.reduce((s,y)=>s+d.years[y].score,0)/ys.length;
+const deltaOf=d=>d.years[2027].score-d.years[2025].score;
+const monYear=()=>state.period==='all'?2026:+state.period;
+
+/* ---------- состояние ---------- */
+const state={tab:'overview',period:'all',dept:null,sort:'score',dir:-1,filter:'all',evalDept:'corp',sim:{}};
+const app=document.getElementById('app');
+
+/* ---------- графики ---------- */
+function lineChart(pts,labels,title){
+  const W=680,H=270,L=44,R=14,T=14,B=40;
+  const vals=pts.map(p=>p.v);
+  const lo=Math.min(.85,Math.min(...vals)-.02),hi=Math.max(1.12,Math.max(...vals)+.02);
+  const x=i=>L+(pts.length<2?0:i*(W-L-R)/(pts.length-1)),y=v=>T+(hi-v)*(H-T-B)/(hi-lo);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(title)}">`;
+  [.9,1,1.1].filter(v=>v>lo&&v<hi).forEach(v=>{s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--border)" ${v===1?'':'stroke-dasharray="2 4"'}/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${Math.round(v*100)}%</text>`});
+  for(let i=1;i<pts.length;i++){s+=`<line x1="${x(i-1)}" y1="${y(pts[i-1].v)}" x2="${x(i)}" y2="${y(pts[i].v)}" stroke="var(--accent)" stroke-width="2.5" ${pts[i].fc?'stroke-dasharray="6 5"':''}/>`}
+  pts.forEach((p,i)=>{const st=statusOf(p.v);s+=`<circle cx="${x(i)}" cy="${y(p.v)}" r="5" fill="var(--surface)" stroke="var(--${st})" stroke-width="3"><title>${labels[i]}: ${pct(p.v)} — ${STL[st][1]}${p.fc?' (прогноз)':''}</title></circle>`;
+    s+=`<text x="${x(i)}" y="${H-22}" text-anchor="middle">${labels[i].split(' ')[0]}</text>`;
+    if(i===0||labels[i].split(' ')[1]!==labels[i-1].split(' ')[1])s+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle" style="font-weight:700">${labels[i].split(' ')[1]}</text>`});
+  return s+'</svg>';
+}
+
+/* ---------- разделы ---------- */
+function intro(who,text){return `<div class="intro"><b>${who}</b>${text}</div>`}
+
+function viewOverview(){
+  const ys=periodYears();
+  const tiles=ys.map(y=>{const c=corpYear(y),st=statusOf(c.score);return `<div class="card tile"><div class="lbl">${y} · ${YLAB[y]}</div><div class="big">${pct(c.score)}</div><div class="bar ${st}" aria-hidden="true"><i style="width:${Math.min(c.score/1.2,1)*100}%"></i></div>${chip(st)} <span class="muted">${catOf(c.score)}</span></div>`}).join('');
+  const head=ys.map(y=>`<th colspan="3" class="n">${y} · ${YLAB[y]}</th>`).join('');
+  const sub=ys.map(()=>'<th class="n">План</th><th class="n">Факт</th><th class="n">Исполнение</th>').join('');
+  const cy=ys.map(corpYear);
+  const rows=CORP.map((k,i)=>`<tr><td>${k[0]}<div class="muted" style="font-size:.78rem">${k[1]||'ед.'} · ${k[2]==='up'?'больше — лучше':'меньше — лучше'}</div></td><td class="n">${k[3]}%</td>${cy.map(c=>{const it=c.items[i];return `<td class="n">${fmt(it.plan,it.dec)}</td><td class="n">${fmt(it.fact,it.dec)}</td><td class="n">${pct(it.perf)} ${chip(statusOf(it.perf))}</td>`}).join('')}</tr>`).join('');
+  const foot=cy.map(c=>`<td colspan="2"></td><td class="n">${pct(c.score)} ${chip(statusOf(c.score))}</td>`).join('');
+  const ranked=DEPTS.map(d=>({d,s:deptScore(d,ys)})).sort((a,b)=>b.s-a.s);
+  const li=a=>a.map(r=>`<li><a href="#" data-dept="${r.d.id}">${r.d.name}</a> — ${pct(r.s)}</li>`).join('');
+  return intro('Для кого: топ-менеджмент.','Здесь итог по корпоративным КПД КМГ: интегральная оценка за год, исполнение каждого показателя и подразделения-лидеры и отстающие. Переключайте период вверху страницы.')+
+  `<div class="grid">${tiles}</div>
+  <div class="card"><h2>Корпоративные КПД КМГ</h2><div class="tw"><table><thead><tr><th rowspan="2">Показатель</th><th rowspan="2" class="n">Вес</th>${head}</tr><tr>${sub}</tr></thead><tbody>${rows}</tbody><tfoot><tr><td>Итоговая оценка</td><td class="n">100%</td>${foot}</tr></tfoot></table></div></div>
+  <div class="cols2"><div class="card"><h3>▲ Лидеры периода</h3><ol>${li(ranked.slice(0,3))}</ol></div><div class="card"><h3>▼ Требуют внимания</h3><ol>${li(ranked.slice(-3).reverse())}</ol></div></div>`;
+}
+
+function viewManagers(){
+  if(state.dept)return viewCard(DEPTS.find(d=>d.id===state.dept));
+  const ys=periodYears();
+  let rows=DEPTS.map(d=>({d,s:deptScore(d,ys),dl:deltaOf(d)}));
+  if(state.filter!=='all')rows=rows.filter(r=>statusOf(r.s)===state.filter);
+  const key=state.sort;
+  rows.sort((a,b)=>key==='name'?state.dir*a.d.name.localeCompare(b.d.name,'ru'):state.dir*((key==='delta'?a.dl-b.dl:a.s-b.s)));
+  const arrow=k=>state.sort===k?(state.dir>0?' ↑':' ↓'):'';
+  const body=rows.map((r,i)=>{const st=statusOf(r.s),dp=r.dl*100;return `<tr class="click" tabindex="0" role="link" data-dept="${r.d.id}" aria-label="Открыть карточку: ${r.d.name}"><td>${i+1}</td><td>${r.d.name}</td><td class="n"><b>${pct(r.s)}</b></td><td>${chip(st)}</td><td class="n"><span class="pm ${dp>=0?'up':'down'}">${dp>=0?'▲ +':'▼ '}${fmt(dp,1)} п.п.</span></td><td aria-hidden="true">›</td></tr>`}).join('');
+  return intro('Для кого: подразделение КПД, топ-менеджмент.','Рейтинг 12 структурных подразделений. Нажмите на строку, чтобы открыть карточку руководителя: показатели, факт и оценку по кварталам.')+
+  `<div class="card"><div class="toolbar"><label>Статус <select id="flt"><option value="all">Все</option><option value="ok"${state.filter==='ok'?' selected':''}>Выполнено</option><option value="risk"${state.filter==='risk'?' selected':''}>Риск</option><option value="lag"${state.filter==='lag'?' selected':''}>Отставание</option></select></label><span class="muted">Оценка: ${state.period==='all'?'среднее за 2025–2027':state.period+' год'}</span></div>
+  <div class="tw"><table><thead><tr><th>№</th><th><button class="sortbtn" data-sort="name">Подразделение${arrow('name')}</button></th><th class="n"><button class="sortbtn" data-sort="score">Оценка${arrow('score')}</button></th><th>Статус</th><th class="n"><button class="sortbtn" data-sort="delta">Динамика 2025→2027${arrow('delta')}</button></th><th></th></tr></thead><tbody>${body||'<tr><td colspan="6" class="muted">Нет подразделений с таким статусом</td></tr>'}</tbody></table></div></div>`;
+}
+
+function viewCard(d){
+  const ys=periodYears();
+  const blocks=ys.map(y=>{const Y=d.years[y];return `<div class="card"><h3>${y} · ${YLAB[y]} — оценка ${pct(Y.score)} ${chip(statusOf(Y.score))}</h3><div class="tw"><table><thead><tr><th>Показатель</th><th class="n">Вес</th><th class="n">План</th><th class="n">Факт</th><th class="n">Исполнение</th></tr></thead><tbody>${Y.items.map(i=>`<tr><td>${i.name}<div class="muted" style="font-size:.78rem">${i.unit||'ед.'} · ${i.dir==='up'?'больше — лучше':'меньше — лучше'}</div></td><td class="n">${i.w}%</td><td class="n">${fmt(i.plan,i.dec)}</td><td class="n">${fmt(i.fact,i.dec)}</td><td class="n">${pct(i.perf)} ${chip(statusOf(i.perf))}</td></tr>`).join('')}</tbody></table></div></div>`}).join('');
+  const pts=[],labels=[];ys.forEach(y=>d.q[y].forEach((q,qi)=>{pts.push(q);labels.push(`К${qi+1} ${y}`)}));
+  return `<div class="crumbs"><button class="btn" data-back>← К рейтингу</button></div><h2>${d.name}</h2>`+
+  intro('Что здесь.','Показатели подразделения с планом, фактом и весом. Ниже — оценка по кварталам: сплошная линия — факт, пунктир — прогноз.')+
+  blocks+`<div class="card"><h3>Оценка по кварталам</h3>${lineChart(pts,labels,'Оценка по кварталам: '+d.name)}<div class="legend"><span>━ факт</span><span>┅ прогноз</span><span>Цвет контура точки: зелёный ≥100%, жёлтый 90–100%, красный &lt;90%; значения — во всплывающей подсказке</span></div></div>`;
+}
+
+function viewHeat(){
+  const ys=periodYears();
+  const h1=ys.map(y=>`<th colspan="4">${y} · ${YLAB[y]}</th>`).join('');
+  const h2=ys.map(()=>[1,2,3,4].map(q=>`<th>К${q}</th>`).join('')).join('');
+  const rows=DEPTS.map(d=>`<tr><td class="rh"><a href="#" data-dept="${d.id}">${d.name}</a></td>${ys.map(y=>d.q[y].map(q=>`<td class="${statusOf(q.v)}${q.fc?' fc':''}" title="${d.name}, ${y}: ${pct(q.v)}${q.fc?' (прогноз)':''}">${Math.round(q.v*100)}</td>`).join('')).join('')}</tr>`).join('');
+  return intro('Для кого: все роли.','Оценка каждого подразделения (в %) по кварталам. Зелёный — выполнено (≥100), жёлтый — риск (90–100), красный — отставание (<90). Пунктирная рамка и курсив — прогноз.')+
+  `<div class="card"><div class="tw" style="padding:6px"><table class="heat"><thead><tr><th></th>${h1}</tr><tr><th></th>${h2}</tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="legend"><span class="chip ok">✓ ≥100</span><span class="chip risk">! 90–100</span><span class="chip lag">✕ &lt;90</span><span>Пунктир — прогноз</span></div></div>`;
+}
+
+/* --- конструктор КПД --- */
+const SAMPLE=()=>[
+ {name:'Добыча нефти',unit:'млн т',dir:'up',base:'23.8',target:'24.5',w:'35',trial:''},
+ {name:'Затраты на тонну',unit:'₸/т',dir:'down',base:'14900',target:'14500',w:'25',trial:''},
+ {name:'Травматизм (LTIFR)',unit:'',dir:'down',base:'0.27',target:'0.25',w:'20',trial:''},
+ {name:'Проекты в срок',unit:'%',dir:'up',base:'88',target:'92',w:'20',trial:''}];
+let kpis=SAMPLE();
+const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isFinite(n)?n:null};
+const smart=v=>fmt(v,Math.abs(v)<1?3:Math.abs(v)<100?2:Math.abs(v)<1000?1:0);
+
+function viewForm(){
+  return intro('Для кого: руководитель подразделения, подразделение КПД.','Пройдите пять шагов, затем заполните конструктор ниже: он сам посчитает порог и максимум и подскажет, что исправить.')+
+  `<div class="steps">
+  <div class="step"><h3>Цели</h3><p>Определите 2–3 главные цели подразделения на год, связанные со стратегией КМГ.</p></div>
+  <div class="step"><h3>Показатели</h3><p>Выберите 3–6 измеримых показателей: по одному на цель, с понятным источником данных.</p></div>
+  <div class="step"><h3>Веса</h3><p>Распределите 100%: чем важнее показатель, тем больше вес (от 5 до 40%).</p></div>
+  <div class="step"><h3>Целевые значения</h3><p>Задайте план: амбициозный, но достижимый. Выберите способ ниже.</p></div>
+  <div class="step"><h3>Согласование</h3><p>Согласуйте с руководителем и подразделением КПД, зафиксируйте и опубликуйте.</p></div></div>
+  <div class="card"><h2>Как выбрать целевое значение</h2><div class="methods">
+   <div><h3>1. От прошлых результатов</h3><p>Возьмите факт прошлых лет и добавьте реалистичный рост. Подходит для стабильных процессов.</p></div>
+   <div><h3>2. От стратегии и бенчмарка</h3><p>Ориентир — цели стратегии КМГ и лучшие результаты сопоставимых компаний. Подходит для показателей развития.</p></div>
+   <div><h3>3. От ресурсов и программ</h3><p>Считайте от бюджета, инвестиций и запланированных мероприятий: какой результат они дадут. Подходит для проектных показателей.</p></div></div></div>
+  <div class="card"><h2>Конструктор КПД</h2>
+   <p class="muted">Введите базу (факт прошлого года), цель и вес. Порог — исполнение 90% от цели, максимум — 120%. Пробный факт покажет, какую оценку вы получите.</p>
+   <div class="toolbar"><button class="btn small" data-act="add">+ Показатель</button><button class="btn small" data-act="sample">Загрузить пример</button><button class="btn small" data-act="clear">Очистить</button><button class="btn primary small" data-act="copy">Копировать таблицу</button><span id="copied" class="muted" role="status"></span></div>
+   <div class="tw"><table id="ctbl"></table></div><div id="checks" style="margin-top:12px" aria-live="polite"></div></div>`;
+}
+function renderCtbl(){
+  const t=document.getElementById('ctbl');if(!t)return;
+  t.innerHTML=`<thead><tr><th>№</th><th>Показатель</th><th>Ед.</th><th>Лучше</th><th>База</th><th>Цель</th><th>Вес, %</th><th class="n">Откл. цели</th><th class="n">Порог (90%)</th><th class="n">Максимум (120%)</th><th>Пробный факт</th><th>Результат</th><th></th></tr></thead><tbody>`+
+  kpis.map((k,i)=>`<tr data-i="${i}"><td>${i+1}</td><td><input type="text" data-f="name" value="${esc(k.name)}" aria-label="Показатель ${i+1}: название" size="18"></td><td><input type="text" data-f="unit" value="${esc(k.unit)}" aria-label="Показатель ${i+1}: единица" size="6"></td><td><select data-f="dir" aria-label="Показатель ${i+1}: направление"><option value="up"${k.dir==='up'?' selected':''}>больше</option><option value="down"${k.dir==='down'?' selected':''}>меньше</option></select></td><td><input type="number" step="any" data-f="base" value="${esc(k.base)}" aria-label="Показатель ${i+1}: база"></td><td><input type="number" step="any" data-f="target" value="${esc(k.target)}" aria-label="Показатель ${i+1}: цель"></td><td><input type="number" step="any" data-f="w" value="${esc(k.w)}" aria-label="Показатель ${i+1}: вес" style="width:70px"></td><td class="n" data-c="dev"></td><td class="n" data-c="thr"></td><td class="n" data-c="max"></td><td><input type="number" step="any" data-f="trial" value="${esc(k.trial)}" aria-label="Показатель ${i+1}: пробный факт"></td><td data-c="res"></td><td><button class="btn small" data-del="${i}" aria-label="Удалить показатель ${i+1}">✕</button></td></tr>`).join('')+
+  `</tbody><tfoot><tr><td colspan="6">Сумма весов</td><td id="wsum"></td><td colspan="6"></td></tr></tfoot>`;
+  updateCalc();
+}
+function updateCalc(){
+  const msgs=[];let sum=0;
+  document.querySelectorAll('#ctbl tbody tr').forEach(tr=>{
+    const i=+tr.dataset.i,k=kpis[i],b=num(k.base),g=num(k.target),w=num(k.w),f=num(k.trial);
+    const c=n=>tr.querySelector(`[data-c=${n}]`);
+    sum+=w||0;
+    const label=`Строка ${i+1}${k.name?' («'+k.name+'»)':''}`;
+    if(g!==null&&b!==null&&b!==0){const dev=(g-b)/Math.abs(b)*100;c('dev').textContent=(dev>0?'+':'')+fmt(dev,1)+'%';
+      const worse=k.dir==='up'?g<b:g>b;
+      if(worse)msgs.push(['bad',`${label}: цель хуже базы — улучшите целевое значение.`]);
+      else if(Math.abs(dev)>25)msgs.push(['bad',`${label}: цель отклоняется от базы на ${fmt(Math.abs(dev),0)}% (допустимо до 25%) — снизьте амбициозность или обоснуйте.`]);
+    }else c('dev').textContent='—';
+    if(g!==null&&g!==0){const thr=k.dir==='up'?g*.9:g/.9,mx=k.dir==='up'?g*1.2:g/1.2;c('thr').textContent=smart(thr);c('max').textContent=smart(mx)}else{c('thr').textContent='—';c('max').textContent='—'}
+    if(w===null||w<5||w>40)msgs.push(['bad',`${label}: вес ${w===null?'не задан':fmt(w,0)+'%'} — допустимо от 5 до 40%.`]);
+    if(g!==null&&g!==0&&f!==null&&f>0){const p=calcPerf(g,f,k.dir);c('res').innerHTML=pct(p)+' '+chip(statusOf(p))}else c('res').textContent='—';
+  });
+  const ws=document.getElementById('wsum');
+  if(ws)ws.innerHTML=`<b>${fmt(sum,0)}%</b>`;
+  const n=kpis.length;
+  const head=[];
+  if(Math.abs(sum-100)>.001)head.push(['bad',`Сумма весов ${fmt(sum,0)}%, а должна быть 100% — ${sum<100?'добавьте':'уберите'} ${fmt(Math.abs(100-sum),0)}%.`]);
+  if(n<3)head.push(['bad',`Показателей ${n} — нужно от 3 до 6, добавьте ещё ${3-n}.`]);
+  if(n>6)head.push(['bad',`Показателей ${n} — нужно от 3 до 6, уберите ${n-6}.`]);
+  const all=head.concat(msgs);
+  const box=document.getElementById('checks');
+  if(box)box.innerHTML=all.length?all.map(m=>`<div class="msg ${m[0]}"><b>✕ Исправьте:</b> ${m[1]}</div>`).join(''):`<div class="msg ok"><b>✓ Всё в порядке.</b> Сумма весов 100%, показателей ${n}, цели в допустимых границах — КПД готов к согласованию.</div>`;
+}
+function copyTable(){
+  const rows=[['№','Показатель','Ед.','Лучше','База','Цель','Вес, %','Порог','Максимум']];
+  kpis.forEach((k,i)=>{const g=num(k.target);rows.push([i+1,k.name,k.unit,k.dir==='up'?'больше':'меньше',k.base,k.target,k.w,g?smart(k.dir==='up'?g*.9:g/.9):'',g?smart(k.dir==='up'?g*1.2:g/1.2):''])});
+  const text=rows.map(r=>r.join('\t')).join('\n');
+  const done=()=>{const c=document.getElementById('copied');if(c){c.textContent='Скопировано ✓';setTimeout(()=>c.textContent='',2500)}};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done,fallback);else fallback();
+  function fallback(){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){}ta.remove()}
+}
+
+/* --- мониторинг --- */
+function viewMonitor(){
+  const y=monYear();
+  const all=[];
+  corpYear(y).items.forEach(i=>all.push({...i,owner:'КМГ (корпоративный)'}));
+  DEPTS.forEach(d=>d.years[y].items.forEach(i=>all.push({...i,owner:d.name})));
+  const cnt={ok:0,risk:0,lag:0};all.forEach(i=>cnt[statusOf(i.perf)]++);
+  const bad=all.filter(i=>i.perf<1).sort((a,b)=>a.perf-b.perf).slice(0,15);
+  const act=p=>p<.8?'Эскалация: план корректирующих мероприятий, рассмотрение на правлении':p<.9?'Корректирующий план и еженедельный контроль у руководителя блока':'Выяснить причину, назначить ответственного, проверить прогноз на следующий квартал';
+  const tot=all.length;
+  return intro('Для кого: подразделение КПД, руководитель.','Мониторинг показывает, где КПД выполняется, где риск и где отставание, и что делать дальше. Показаны данные за '+y+' год'+(state.period==='all'?' (при выборе «Все годы» берётся 2026)':'')+'.')+
+  `<div class="zones"><div class="card"><div class="lbl muted">Выполнено</div><div class="big" style="color:var(--ok)">${cnt.ok}</div>${chip('ok')}</div><div class="card"><div class="lbl muted">Риск</div><div class="big" style="color:var(--risk)">${cnt.risk}</div>${chip('risk')}</div><div class="card"><div class="lbl muted">Отставание</div><div class="big" style="color:var(--lag)">${cnt.lag}</div>${chip('lag')}</div></div>
+  <div class="card"><h2>15 самых проблемных показателей (из ${tot})</h2><div class="tw"><table><thead><tr><th>№</th><th>Показатель</th><th>Подразделение</th><th class="n">План</th><th class="n">Факт</th><th class="n">Исполнение</th><th>Рекомендуемое действие</th></tr></thead><tbody>${bad.map((i,n)=>`<tr><td>${n+1}</td><td>${i.name}</td><td>${i.owner}</td><td class="n">${fmt(i.plan,i.dec)}</td><td class="n">${fmt(i.fact,i.dec)}</td><td class="n">${pct(i.perf)} ${chip(statusOf(i.perf))}</td><td>${act(i.perf)}</td></tr>`).join('')||'<tr><td colspan="7">Все показатели выполнены</td></tr>'}</tbody></table></div></div>
+  <div class="cols2"><div class="card"><h2>Цикл мониторинга</h2><div class="ladder"><div class="l1"><b>Ежемесячно.</b> Владелец показателя вносит факт и оценивает тренд.</div><div class="l1"><b>Ежеквартально.</b> Подразделение КПД сводит данные, обновляет прогноз года, рассматривает отклонения.</div><div class="l1"><b>По итогам года.</b> Итоговая оценка, выводы и подготовка КПД следующего периода.</div></div></div>
+  <div class="card"><h2>Лесенка реагирования</h2><div class="ladder"><div class="l1"><b>≥100% — выполнено.</b> Фиксируем результат, делимся практикой.</div><div class="l2"><b>90–100% — риск.</b> Руководитель выясняет причины, назначает ответственного, пересматривает прогноз.</div><div class="l3"><b>&lt;90% — отставание.</b> Корректирующий план, эскалация вышестоящему руководителю, контроль на комиссии.</div></div></div></div>`;
+}
+
+/* --- оценка --- */
+function evalSet(){
+  const y=monYear();
+  if(state.evalDept==='corp')return{y,name:'КПД КМГ (корпоративные)',items:corpYear(y).items};
+  const d=DEPTS.find(x=>x.id===state.evalDept);return{y,name:d.name,items:d.years[y].items};
+}
+function viewEval(){
+  const{y,name,items}=evalSet();
+  const opts=`<option value="corp"${state.evalDept==='corp'?' selected':''}>КПД КМГ (корпоративные)</option>`+DEPTS.map(d=>`<option value="${d.id}"${state.evalDept===d.id?' selected':''}>${d.name}</option>`).join('');
+  const rows=items.map((i,n)=>{const v=state.sim[n]!=null?state.sim[n]:Math.round(i.perf*100);return `<tr data-n="${n}"><td>${i.name}</td><td class="n">${i.w}%</td><td class="n">${pct(i.perf,0)}</td><td style="min-width:200px"><input type="range" min="0" max="130" step="1" value="${v}" data-sim="${n}" aria-label="Исполнение: ${esc(i.name)}"></td><td class="n" data-s="v">${v}%</td><td class="n" data-s="p"></td></tr>`}).join('');
+  return intro('Для кого: руководитель, комиссия по оценке.','Оценка — это сумма баллов по показателям. Подвигайте ползунки исполнения и сразу увидите, как меняется итоговая оценка и категория.')+
+  `<div class="card"><h2>Как считается оценка</h2>
+   <div class="formula"><b>1.</b> Исполнение = факт ÷ план. Если «меньше — лучше» (затраты, травматизм): план ÷ факт.<br><b>2.</b> Исполнение в расчёте не больше 120%.<br><b>3.</b> Баллы показателя = вес × исполнение.<br><b>4.</b> Оценка = сумма баллов (сумма весов = 100%).</div>
+   <p class="muted">Пример: вес 30%, план 100, факт 110 → исполнение 110% → 30% × 110% = 33 балла.</p></div>
+  <div class="card"><h2>Расчёт и симулятор</h2>
+   <div class="toolbar"><label>Подразделение <select id="evsel">${opts}</select></label><span class="muted">Год: ${y}${state.period==='all'?' (при выборе «Все годы» берётся 2026)':''}</span><button class="btn small" data-act="simreset">Сбросить к факту</button></div>
+   <div class="tw"><table><thead><tr><th>Показатель</th><th class="n">Вес</th><th class="n">По факту</th><th>Исполнение (ползунок)</th><th class="n">Значение</th><th class="n">Баллы</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="4">Итоговая оценка — ${esc(name)}</td><td class="n" id="evtotal"></td><td class="n" id="evcat"></td></tr></tfoot></table></div>
+   <div id="evres" style="margin-top:12px" aria-live="polite"></div></div>
+  <div class="card"><h2>Категории оценки</h2><div class="tw"><table><thead><tr><th>Оценка</th><th>Категория</th></tr></thead><tbody><tr><td>от 110%</td><td>Превосходит ожидания</td></tr><tr><td>100–110%</td><td>Соответствует ожиданиям</td></tr><tr><td>90–100%</td><td>Частично соответствует</td></tr><tr><td>ниже 90%</td><td>Не соответствует</td></tr></tbody></table></div><p class="muted" style="margin-top:8px">Ориентир; уточняется по регламенту КМГ.</p></div>`;
+}
+function updateEval(){
+  const{items}=evalSet();let total=0;
+  document.querySelectorAll('[data-sim]').forEach(r=>{
+    const n=+r.dataset.sim,v=+r.value;state.sim[n]=v;
+    const p=Math.min(v,120)/100*items[n].w;total+=p;
+    const tr=r.closest('tr');tr.querySelector('[data-s=v]').textContent=v+'%';tr.querySelector('[data-s=p]').textContent=fmt(p,1);
+  });
+  const s=total/100,st=statusOf(s);
+  const t=document.getElementById('evtotal');if(!t)return;
+  t.textContent=fmt(total,1)+'%';
+  document.getElementById('evcat').innerHTML=chip(st);
+  document.getElementById('evres').innerHTML=`<div class="msg ${st==='ok'?'ok':st==='risk'?'warn':'bad'}"><b>Итог: ${pct(s)} — ${catOf(s)}.</b> ${st==='ok'?'Показатели выполняются в целом.':st==='risk'?'Не хватает до 100% — подтяните слабые показатели.':'Нужен корректирующий план.'}</div>`;
+}
+
+/* ---------- рендер ---------- */
+function render(){
+  document.getElementById('tabs').innerHTML=TABS.map(([id,l])=>`<button type="button" data-tab="${id}"${state.tab===id?' aria-current="page"':''}>${l}</button>`).join('');
+  const v={overview:viewOverview,managers:viewManagers,heat:viewHeat,form:viewForm,monitor:viewMonitor,eval:viewEval}[state.tab];
+  app.innerHTML=v();
+  if(state.tab==='form')renderCtbl();
+  if(state.tab==='eval')updateEval();
+}
+function go(tab,dept){state.tab=tab;state.dept=dept||null;render();window.scrollTo(0,0)}
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-tab],[data-dept],[data-back],[data-sort],[data-act],[data-del]');if(!t)return;
+  if(t.dataset.tab){go(t.dataset.tab)}
+  else if(t.dataset.dept){e.preventDefault();go('managers',t.dataset.dept)}
+  else if('back' in t.dataset){state.dept=null;render()}
+  else if(t.dataset.sort){const k=t.dataset.sort;if(state.sort===k)state.dir*=-1;else{state.sort=k;state.dir=k==='name'?1:-1}render()}
+  else if(t.dataset.del!==undefined){kpis.splice(+t.dataset.del,1);renderCtbl()}
+  else if(t.dataset.act){const a=t.dataset.act;
+    if(a==='add'){kpis.push({name:'',unit:'',dir:'up',base:'',target:'',w:'',trial:''});renderCtbl()}
+    else if(a==='sample'){kpis=SAMPLE();renderCtbl()}
+    else if(a==='clear'){kpis=[];renderCtbl()}
+    else if(a==='copy')copyTable();
+    else if(a==='simreset'){state.sim={};render()}}
+});
+document.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('tr.click')){e.preventDefault();go('managers',e.target.dataset.dept)}
+});
+document.addEventListener('input',e=>{
+  const t=e.target;
+  if(t.dataset.f){const i=+t.closest('tr').dataset.i;kpis[i][t.dataset.f]=t.value;updateCalc()}
+  else if(t.dataset.sim!==undefined)updateEval();
+});
+document.addEventListener('change',e=>{
+  const t=e.target;
+  if(t.name==='period'){state.period=t.value;state.sim={};render()}
+  else if(t.id==='flt'){state.filter=t.value;render()}
+  else if(t.id==='evsel'){state.evalDept=t.value;state.sim={};render()}
+  else if(t.dataset.f==='dir'){const i=+t.closest('tr').dataset.i;kpis[i].dir=t.value;updateCalc()}
+});
+document.getElementById('theme').addEventListener('click',()=>{
+  const r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;
+  r.dataset.theme=dark?'light':'dark';
+});
+render();
+</script>
+</body>
+</html>
